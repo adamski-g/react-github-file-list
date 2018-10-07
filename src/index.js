@@ -2,13 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import "./index.css";
+import Time from "./time";
 
 const testFiles = [
   {
     id: 1,
     name: "src",
     type: "folder",
-    updated_at: "2016-07-11 21:24:00",
+    updated_at: "2018-07-11 21:24:00",
     latestCommit: {
       message: "Initial commit"
     }
@@ -17,7 +18,7 @@ const testFiles = [
     id: 2,
     name: "tests",
     type: "folder",
-    updated_at: "2016-07-11 21:24:00",
+    updated_at: "2018-07-11 21:24:00",
     latestCommit: {
       message: "Initial commit"
     }
@@ -26,21 +27,21 @@ const testFiles = [
     id: 3,
     name: "README",
     type: "file",
-    updated_at: "2016-07-18 21:24:00",
+    updated_at: "2018-07-18 21:24:00",
     latestCommit: {
       message: "Added a readme"
     }
   }
 ];
 
+// parent file list
+
 const FileList = ({ files }) => {
   return (
     <table className="file-list">
       <tbody>
         {files.map(file => (
-          <tr className="file-list-item" key={file.id}>
-            <td className="file-name">{file.name}</td>
-          </tr>
+          <FileListItem key={file.id} file={file} />
         ))}
       </tbody>
     </table>
@@ -49,6 +50,51 @@ const FileList = ({ files }) => {
 
 FileList.propTypes = {
   files: PropTypes.array
+};
+
+// file list item
+
+const FileListItem = ({ file }) => (
+  <tr className="file-list-item" key={file.id}>
+    <FileIcon file={file} key={0} />
+    <td className="file-name" key={1}>
+      {file.name}
+    </td>
+    <CommitMessage commit={file.latestCommit} />
+    <td className="age">
+      <Time time={file.updated_at} />
+    </td>
+  </tr>
+);
+
+FileListItem.propTypes = {
+  files: PropTypes.object.isRequired
+};
+
+// file icon item
+
+function FileIcon({ file }) {
+  let icon = "fa-file-text-o";
+  if (file.type === "folder") {
+    icon = "fa-folder";
+  }
+
+  return (
+    <td className="file-icon">
+      <i className={`fa ${icon}`} />
+    </td>
+  );
+}
+
+FileIcon.propTypes = {
+  file: PropTypes.object.isRequired
+};
+
+const CommitMessage = ({ commit }) => (
+  <td className="commit-message">{commit.message}</td>
+);
+CommitMessage.propTypes = {
+  commit: PropTypes.object.isRequired
 };
 
 ReactDOM.render(
